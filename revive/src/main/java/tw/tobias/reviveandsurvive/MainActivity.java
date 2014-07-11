@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.android.gms.location.DetectedActivity;
 
 public class MainActivity extends Activity {
 
