@@ -21,7 +21,7 @@ public class MainActivity extends Activity {
     protected void showState(Intent intent) {
         TextView output = (TextView)findViewById(R.id.current_state);
 
-        output.setText(intent.getStringExtra("currentState"));
+        output.setText("You are currently " + intent.getStringExtra("currentState").toLowerCase());
     }
 
     @Override
