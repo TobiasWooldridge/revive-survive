@@ -1,5 +1,6 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -9,8 +10,59 @@
     tools:context="tw.tobias.reviveandsurvive.MainActivity">
 
     <TextView
-        android:text="@string/hello_world"
+        android:text="Currently figuring out whether you're moving"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:id="@+id/current_state"/>
 
-</RelativeLayout>
+    <ImageView
+            android:layout_gravity="center_horizontal"
+            android:paddingTop="10px"
+            android:paddingBottom="5px"
+            android:layout_height="wrap_content"
+            android:layout_width="fill_parent"
+            android:src="@android:drawable/divider_horizontal_bright" />
+
+    <TextView
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="How long have I been driving?"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+
+    <SeekBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/seekBar"
+            android:progress="31"
+            android:enabled="false" />
+
+    <RelativeLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="0 mins"
+                android:id="@+id/textView"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"/>
+
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:text="2 hours"
+                android:id="@+id/textView"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"/>
+    </RelativeLayout>
+
+
+</LinearLayout>
