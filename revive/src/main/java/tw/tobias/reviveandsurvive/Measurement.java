@@ -31,12 +31,18 @@ public class Measurement {
         return lastUpdated  - since;
     }
 
-    public String getDurationFormatted(String format) {
-        return new SimpleDateFormat(format).format(new Date(getDurationMillis()));
-    }
-
     public String getDurationFormatted() {
-        return getDurationFormatted("HH'h' mm'm' ss's'");
+        long totalMillis = getDurationMillis();
+
+        int seconds = (int)(totalMillis / 1000);
+
+        int hours = seconds / (3600);
+        seconds = seconds % 3600;
+
+        int minutes = seconds / 60;
+        seconds = seconds % 60;
+
+        return String.format("%dh %dm %ds", hours, minutes, seconds);
     }
 
     @Override

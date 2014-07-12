@@ -53,6 +53,7 @@ public class ActivityTrackerService extends IntentService {
         if (ActivityRecognitionResult.hasResult(intent)) {
             // Create a new measurement as appropriate
             ActivityRecognitionResult result = ActivityRecognitionResult.extractResult(intent);
+
             addMeasurement(getActivityName(result.getMostProbableActivity().getType()), result.getTime());
 
             Log.d(TAG, getLatestMeasurement().toString());

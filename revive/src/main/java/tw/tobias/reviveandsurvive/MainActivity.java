@@ -64,6 +64,8 @@ public class MainActivity extends Activity {
         return WarningLevel.NOT_DRIVING;
     }
 
+    public WarningLevel previousWarning = WarningLevel.NOT_DRIVING;
+
     public void showWarningLevelMessage(WarningLevel level) {
         TextView guidanceMessage = (TextView)findViewById(R.id.guidance_message);
         guidanceMessage.setText(level.message);
@@ -71,21 +73,26 @@ public class MainActivity extends Activity {
 
     public void updateDrivingProgressBar(long drivingDuration) {
         SeekBar drivingDurationBar = (SeekBar)findViewById(R.id.driving_duration_status_bar);
+        drivingDurationBar.setEnabled(false);
         drivingDurationBar.setProgress((int)(100 * (drivingDuration / TWO_HOURS)));
     }
 
-    protected void showDrivingState(Intent intent) {
+    private void showDrivingState(Intent intent) {
         TextView output = (TextView)findViewById(R.id.current_state);
 
         Measurement latest = Measurement.fromJson(intent.getStringExtra("latestMeasurement"));
 
-        output.setText("You have been " + latest.status.toLowerCase() + " for " + latest.getDurationMillis()/1000 + "s");
+        output.setText("You have been " + latest.status.toLowerCase() + " for " + latest.getDurationFormatted());
 
         long drivingDuration = 0;
         if (latest.status == ActivityTrackerService.STATUS_IN_A_VEHICLE) {
             drivingDuration = latest.getDurationMillis();
         }
 
+        showTimeDriven(drivingDuration);
+    }
+
+    private void showTimeDriven(long drivingDuration) {
         updateDrivingProgressBar(drivingDuration);
         showWarningLevelMessage(getCurrentLevel(drivingDuration));
     }
@@ -94,16 +101,15 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        new ActivityTrackerScan(this).startActivityRecognitionScan();
-
-        showWarningLevelMessage(WarningLevel.NOT_DRIVING);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         registerReceiver(broadcastReceiver, new IntentFilter(ActivityTrackerService.BROADCAST_ACTION));
+
+        new ActivityTrackerScan(this).startActivityRecognitionScan();
+        showWarningLevelMessage(WarningLevel.NOT_DRIVING);
     }
 
     @Override
@@ -127,9 +133,11 @@ public class MainActivity extends Activity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+
         if (id == R.id.action_settings) {
             return true;
         }
+
         return super.onOptionsItemSelected(item);
     }
 
