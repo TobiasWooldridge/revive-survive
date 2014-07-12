@@ -118,7 +118,7 @@
             android:layout_height="match_parent">
         <ListView
                 android:layout_width="match_parent"
-                android:layout_height="156dp"
+                android:layout_height="fill_parent"
                 android:id="@+id/pit_stops"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"

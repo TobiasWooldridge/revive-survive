@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
@@ -12,10 +13,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.SeekBar;
-import android.widget.TextView;
+import android.widget.*;
 import tw.tobias.reviveandsurvive.client.JsonClient;
 import tw.tobias.reviveandsurvive.client.PitStop;
 
@@ -37,6 +35,7 @@ public class MainActivity extends Activity {
     private final static int TWO_HOURS = 2 * ONE_HOUR;
     private TextToSpeech tts;
     private JsonClient client;
+    private ListView listView;
 
     public class TTSInitListener implements TextToSpeech.OnInitListener {
         @Override
@@ -115,7 +114,8 @@ public class MainActivity extends Activity {
     public void updateDrivingProgressBar(long drivingDuration) {
         SeekBar drivingDurationBar = (SeekBar)findViewById(R.id.driving_duration_status_bar);
         drivingDurationBar.setEnabled(false);
-        drivingDurationBar.setProgress((int)(100 * (drivingDuration / TWO_HOURS)));
+        int progressPercent = (int)(100 * (drivingDuration / TWO_HOURS));
+        drivingDurationBar.setProgress(Math.min(100, progressPercent));
     }
 
     private void showDrivingState(Intent intent) {
@@ -184,22 +184,34 @@ public class MainActivity extends Activity {
     }
 
     private void displayPitStops(Collection<PitStop> pitStops) {
-        ListView listView = (ListView) findViewById(R.id.pit_stops);
+        if (listView == null) {
+            listView = (ListView) findViewById(R.id.pit_stops);
+        }
 
         List<String> values = new ArrayList<>();
-
+        final List<PitStop> pitStopList = new ArrayList<>();
         for (PitStop ps : pitStops) {
             values.add(ps.toString());
+            pitStopList.add(ps);
         }
 
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_list_item_1,
-                android.R.id.text1,
-                values);
+            this,
+            android.R.layout.simple_list_item_1,
+            android.R.id.text1,
+            values);
 
         listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                PitStop ps = pitStopList.get(position);
+                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + ps.getLat() + "," + ps.getLon()));
+                startActivity(i);
+            }
+        });
     }
 
     @Override

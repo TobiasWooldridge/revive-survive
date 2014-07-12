@@ -3,9 +3,9 @@ package tw.tobias.reviveandsurvive.client;
 public class PitStop {
     private double lat;
     private double lon;
-    private double distance;
-    private String type;
-    private String description;
+    private double distance = 0;
+    private String type = "";
+    private String description = "";
 
     public double getLat() {
         return lat;
