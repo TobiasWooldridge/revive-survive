@@ -58,8 +58,29 @@
     <div class="container">
 
       <div class="starter-template">
-        <h1>Bootstrap starter template</h1>
-        <p class="lead">Use this document as a way to quickly start any new project.<br> All you get is this text and a mostly barebones HTML document.</p>
+        <h1>Revive Survive</h1>
+<p class="lead">Don't risk fatigue on our roads. Know where and when to stop.</p>
+<a name="about"></a>
+<p>Revive Survive runs constantly on your device, and knows when you're driving.  It tells you:</p>
+<ul>
+<li>Where and when to stop
+<li>When you are approaching an area of higher crash risk
+<li>Where upcoming public toilets, rest stops and hotels are
+</ul>
+<p>Run it all the time - it won't drain your battery.
+
+<a name="tech"></a>
+<h1>Tech</h1>
+<p>Instead of using GPS or WiFi to know what you're doing, Revive Survive uses <a href="http://developer.android.com/training/location/activity-recognition.html">Android's Activity Recognition service</a>.  This uses the phone's accelerometer to know whether you're driving or not.</p>
+<p>The application currently gets upcoming rest stops from a PostGis server.  An enhancement could store this data locally so no data connection is needed.</p>
+<p>The GPS is activated briefly when it's time to stop driving.  The low-resolution service which uses the mobile phone towers would be adequate.</p>
+
+<a name="data"></a>
+<h1>Data sources</h1>
+<p>Our data sources include:</p>
+<ul>
+<li>Petrol stations and public toilets from OpenStreetMap
+</ul>
       </div>
 
     </div><!-- /.container -->
