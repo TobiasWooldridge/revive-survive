@@ -112,13 +112,11 @@
                 android:id="@+id/button_public_bbqs"/>
     </RadioGroup>
 
-    <View
+    <ListView
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/holo_blue_light"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="15dp"/>
-
+            android:layout_height="231dp"
+            android:id="@+id/listView"
+            android:layout_gravity="center_horizontal"/>
 
 
     <RelativeLayout

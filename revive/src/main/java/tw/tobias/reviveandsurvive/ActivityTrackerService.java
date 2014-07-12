@@ -25,7 +25,6 @@ public class ActivityTrackerService extends IntentService {
     public static final String STATUS_STILL = "Still";
     public static final String STATUS_RUNNING = "Running";
 
-    private static final String PREFS_NAME = "ActivityTrackerState";
     public static final String BROADCAST_ACTION = "tw.tobias.reviveandsurvive";
     private static final String TAG = "ActivityTrackerService";
     public static final String SERIALIZED_HIST_KEY = "serializedHistory";
@@ -71,21 +70,24 @@ public class ActivityTrackerService extends IntentService {
             case DetectedActivity.IN_VEHICLE:
                 return STATUS_IN_A_VEHICLE;
 
-            case DetectedActivity.ON_FOOT:
-                return STATUS_ON_FOOT;
-            case DetectedActivity.ON_BICYCLE:
-                return STATUS_ON_BIKE;
-            case DetectedActivity.RUNNING:
-                return STATUS_RUNNING;
-
-            case DetectedActivity.STILL:
-                return STATUS_STILL;
-            case DetectedActivity.TILTING:
-                return STATUS_TILTING;
+//            case DetectedActivity.ON_FOOT:
+//                return STATUS_ON_FOOT;
+//            case DetectedActivity.ON_BICYCLE:
+//                return STATUS_ON_BIKE;
+//            case DetectedActivity.RUNNING:
+//                return STATUS_RUNNING;
+//
+//            case DetectedActivity.STILL:
+//                return STATUS_STILL;
+//            case DetectedActivity.TILTING:
+//                return STATUS_TILTING;
+//
+//            default:
+//                Log.w(TAG, "Unknown activity type of " + detectedActivity);
+//                return STATUS_UNKNOWN;
 
             default:
-                Log.w(TAG, "Unknown activity type of " + detectedActivity);
-                return STATUS_UNKNOWN;
+                return STATUS_ON_FOOT;
         }
     }
 

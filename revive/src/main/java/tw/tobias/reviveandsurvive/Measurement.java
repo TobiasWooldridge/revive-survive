@@ -56,6 +56,10 @@ public class Measurement {
                 '}';
     }
 
+    public boolean inVehicle() {
+        return status == ActivityTrackerService.STATUS_IN_A_VEHICLE;
+    }
+
     public static Measurement fromJson(String serialized) {
         return new Gson().fromJson(serialized, measurementType);
     }
