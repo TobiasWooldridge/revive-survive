@@ -12,17 +12,15 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import com.google.android.gms.maps.model.LatLng;
-import org.w3c.dom.Text;
 import tw.tobias.reviveandsurvive.client.JsonClient;
-import tw.tobias.reviveandsurvive.client.RestStop;
+import tw.tobias.reviveandsurvive.client.PitStop;
 
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Locale;
+import java.util.*;
 
 public class MainActivity extends Activity {
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
@@ -163,11 +161,12 @@ public class MainActivity extends Activity {
 
 
         new getPointsTask().execute();
+        showWarningLevelMessage(WarningLevel.NOT_DRIVING);
     }
 
-    private class getPointsTask extends AsyncTask<Void, Void, Collection<RestStop>> {
+    private class getPointsTask extends AsyncTask<Void, Void, Collection<PitStop>> {
         @Override
-        protected Collection<RestStop> doInBackground(Void... voids) {
+        protected Collection<PitStop> doInBackground(Void... voids) {
             try {
                 return client.getStops(-33.8757049, 151.231705, 5000);
             } catch (IOException e) {
@@ -178,10 +177,29 @@ public class MainActivity extends Activity {
         }
 
         @Override
-        protected void onPostExecute(Collection<RestStop> restStops) {
-            super.onPostExecute(restStops);
-            Log.e(TAG, "" + restStops.size());
+        protected void onPostExecute(Collection<PitStop> pitStops) {
+            super.onPostExecute(pitStops);
+            displayPitStops(pitStops);
         }
+    }
+
+    private void displayPitStops(Collection<PitStop> pitStops) {
+        ListView listView = (ListView) findViewById(R.id.pit_stops);
+
+        List<String> values = new ArrayList<>();
+
+        for (PitStop ps : pitStops) {
+            values.add(ps.toString());
+        }
+
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_list_item_1,
+                android.R.id.text1,
+                values);
+
+        listView.setAdapter(adapter);
     }
 
     @Override

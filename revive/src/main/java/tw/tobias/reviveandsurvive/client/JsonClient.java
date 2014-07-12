@@ -15,16 +15,16 @@ import com.google.gson.reflect.TypeToken;
 public class JsonClient {
     private final Gson gson = new Gson();
     private static final Type collectionType
-            = new TypeToken<Collection<RestStop>>(){}.getType();
+            = new TypeToken<Collection<PitStop>>(){}.getType();
 
-    Collection<RestStop> parse(InputStream in) {
+    Collection<PitStop> parse(InputStream in) {
         return gson.fromJson(
                 new InputStreamReader(in, Charset.defaultCharset()),
                 collectionType
         );
     }
 
-    public Collection<RestStop> getStops(double lat, double lon, double radius) throws IOException {
+    public Collection<PitStop> getStops(double lat, double lon, double radius) throws IOException {
         URL url = new URL(String.format("http://vertex.xyz/?latitude=%s&longitude=%s&radius=%s", lat, lon, radius));
 
         InputStream in = null;

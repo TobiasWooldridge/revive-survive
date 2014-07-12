@@ -1,6 +1,6 @@
 package tw.tobias.reviveandsurvive.client;
 
-public class RestStop {
+public class PitStop {
     private double lat;
     private double lon;
     private double distance;
@@ -21,5 +21,9 @@ public class RestStop {
     }
     public double getDistance() {
         return distance;
+    }
+
+    public String toString() {
+        return getType() + " " + getDescription();
     }
 }
