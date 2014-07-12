@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
@@ -13,8 +14,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import com.google.android.gms.maps.model.LatLng;
 import org.w3c.dom.Text;
+import tw.tobias.reviveandsurvive.client.JsonClient;
+import tw.tobias.reviveandsurvive.client.RestStop;
 
+import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Locale;
 
 public class MainActivity extends Activity {
@@ -31,6 +38,7 @@ public class MainActivity extends Activity {
     private final static int ONE_HOUR = 60 * 60 * 1000;
     private final static int TWO_HOURS = 2 * ONE_HOUR;
     private TextToSpeech tts;
+    private JsonClient client;
 
     public class TTSInitListener implements TextToSpeech.OnInitListener {
         @Override
@@ -151,6 +159,29 @@ public class MainActivity extends Activity {
             }
         });
 
+        client = new JsonClient();
+
+
+        new getPointsTask().execute();
+    }
+
+    private class getPointsTask extends AsyncTask<Void, Void, Collection<RestStop>> {
+        @Override
+        protected Collection<RestStop> doInBackground(Void... voids) {
+            try {
+                return client.getStops(-33.8757049, 151.231705, 5000);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return Collections.emptySet();
+        }
+
+        @Override
+        protected void onPostExecute(Collection<RestStop> restStops) {
+            super.onPostExecute(restStops);
+            Log.e(TAG, "" + restStops.size());
+        }
     }
 
     @Override
