@@ -31,3 +31,11 @@ h1, .lead {
   text-align: center;
 }
 
+.images {
+  text-align: center;
+}
+
+.images img {
+  margin: 0.5em;
+}
+
