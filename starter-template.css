@@ -12,6 +12,10 @@ h1, h2, h3, h4, .lead {
   text-align: center;
 }
 
+h2 {
+  font-size: 25px;
+}
+
 .icons {
   text-align: center;
 }
