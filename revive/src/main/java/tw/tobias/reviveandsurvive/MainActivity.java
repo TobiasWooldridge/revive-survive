@@ -173,6 +173,11 @@ public class MainActivity extends Activity {
         showTimeDriven(drivingDuration);
     }
 
+    private void refreshData() {
+        new GetPointsTask().execute();
+        new GetCrashesTask().execute();
+    }
+
     private void showTimeDriven(long drivingDuration) {
         updateDrivingProgressBar(drivingDuration);
         showWarningLevelMessage(getCurrentLevel(drivingDuration));
@@ -288,11 +293,11 @@ public class MainActivity extends Activity {
 
         // Load nearby points of interest (stops, toilets, etc.)
         pitStopClient = new PitStopClient();
-        new GetPointsTask().execute();
 
         // Get how many crashes have been nearby in the last 5 years
         crashStatsClient = new CrashStatsClient();
-        new GetCrashesTask().execute();
+
+        refreshData();
 
         showWarningLevelMessage(WarningLevel.NOT_DRIVING);
         for (int id : checkboxIds) {
@@ -335,7 +340,8 @@ public class MainActivity extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if (id == R.id.action_settings) {
+        if (id == R.id.refresh) {
+            refreshData();
             return true;
         }
 
