@@ -7,6 +7,7 @@ import java.lang.reflect.Type;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Collection;
+import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
@@ -17,14 +18,14 @@ public class JsonClient {
     private static final Type collectionType
             = new TypeToken<Collection<PitStop>>(){}.getType();
 
-    Collection<PitStop> parse(InputStream in) {
+    List<PitStop> parse(InputStream in) {
         return gson.fromJson(
                 new InputStreamReader(in, Charset.defaultCharset()),
                 collectionType
         );
     }
 
-    public Collection<PitStop> getStops(double lat, double lon, double radius) throws IOException {
+    public List<PitStop> getStops(double lat, double lon, double radius) throws IOException {
         URL url = new URL(String.format("http://54.210.25.223/?latitude=%s&longitude=%s&radius=%s", lat, lon, radius));
 
         InputStream in = null;

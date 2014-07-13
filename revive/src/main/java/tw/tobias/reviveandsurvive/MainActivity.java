@@ -37,7 +37,7 @@ public class MainActivity extends Activity {
     private JsonClient client;
     private ListView listView;
 
-    Collection<PitStop> pitStops = Collections.emptySet();
+    List<PitStop> pitStops = Collections.emptyList();
 
     int[] checkboxIds = { R.id.button_petrol_stations, R.id.button_public_rest_stops, R.id.button_public_toilets };
 
@@ -119,12 +119,13 @@ public class MainActivity extends Activity {
         SeekBar drivingDurationBar = (SeekBar)findViewById(R.id.driving_duration_status_bar);
         drivingDurationBar.setEnabled(false);
         int progressPercent = (int)(100 * ((double)drivingDuration / TWO_HOURS  ));
-        Log.i(TAG, "Driving for " + drivingDuration + " aka " + progressPercent);
+        Log.i(TAG, "Driving for " + drivingDuration + " aka " + progressPercent + "%");
         drivingDurationBar.setProgress(Math.min(100, progressPercent));
     }
 
     private void showDrivingState(Intent intent) {
         TextView output = (TextView)findViewById(R.id.current_state);
+        TextView topText = (TextView)findViewById(R.id.you_have_been_driving);
 
         Measurement latest = Measurement.fromJson(intent.getStringExtra("latestMeasurement"));
 
@@ -133,7 +134,13 @@ public class MainActivity extends Activity {
         long drivingDuration = 0;
         if (latest.status.equals(ActivityTrackerService.STATUS_IN_A_VEHICLE)) {
             drivingDuration = latest.getDurationMillis();
+
+            topText.setText("You have been driving for " + latest.getDurationFormatted());
         }
+
+        topText.setText("You are not driving at the moment");
+
+
 
         showTimeDriven(drivingDuration);
     }
@@ -143,20 +150,20 @@ public class MainActivity extends Activity {
         showWarningLevelMessage(getCurrentLevel(drivingDuration));
     }
 
-    private class getPointsTask extends AsyncTask<Void, Void, Collection<PitStop>> {
+    private class getPointsTask extends AsyncTask<Void, Void, List<PitStop>> {
         @Override
-        protected Collection<PitStop> doInBackground(Void... voids) {
+        protected List<PitStop> doInBackground(Void... voids) {
             try {
                 return client.getStops(-34.9274606, 138.6008726, 5000);
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-            return Collections.emptySet();
+            return Collections.emptyList();
         }
 
         @Override
-        protected void onPostExecute(Collection<PitStop> newPitStops) {
+        protected void onPostExecute(List<PitStop> newPitStops) {
             super.onPostExecute(newPitStops);
 
             pitStops = newPitStops;
@@ -220,10 +227,11 @@ public class MainActivity extends Activity {
         output.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                PitStop next = pitStops.get(0);
                 tts.speak("You have been driving for over " +
                         WarningLevel.DANGER.timeDesc + ". " +
                         WarningLevel.DANGER.message + ". " +
-                        "There is a rest stop in 2 km. Perhaps stop there?"
+                        String.format("There is a %s in %s. You could stop there.", next.getType(), next.getDistanceReadable())
                         , TextToSpeech.QUEUE_ADD, null);
             }
         });

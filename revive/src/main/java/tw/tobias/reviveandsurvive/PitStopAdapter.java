@@ -31,21 +31,23 @@ public class PitStopAdapter extends ArrayAdapter<PitStop> {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+        PitStop item = items.get(position);
+
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         View rowView = inflater.inflate(R.layout.stop_row, parent, false);
 
         TextView typeView = (TextView) rowView.findViewById(R.id.stop_type);
-        typeView.setText(items.get(position).getType());
+        typeView.setText(item.getType());
 
         TextView descriptionView = (TextView) rowView.findViewById(R.id.stop_description);
-        descriptionView.setText(items.get(position).getName());
+        descriptionView.setText(item.getName());
 
         TextView glyphView = (TextView) rowView.findViewById(R.id.glyph);
-        glyphView.setText(items.get(position).getGlyph());
+        glyphView.setText(item.getGlyph());
 
         TextView distView = (TextView) rowView.findViewById(R.id.distance_km);
-        distView.setText(String.format("%.3f km", items.get(position).getDistance()/1000));
+        distView.setText(item.getDistanceString());
 
         return rowView;
     }

@@ -61,6 +61,21 @@ public class PitStop {
         return distance;
     }
 
+    public String getDistanceString() {
+        return String.format("%.2f km", getDistance()/1000);
+    }
+
+    public String getDistanceReadable() {
+        if (distance < 1000) {
+            int hundredMeters = (int)(distance - (distance % 100)) + 100;
+            return String.format("less than %d m", hundredMeters);
+        }
+        else {
+            double km = Double.parseDouble(String.format("%.2f", distance/1000));
+            return String.format("%d km", km);
+        }
+    }
+
     public String toString() {
         return getType() + " " + getName();
     }
