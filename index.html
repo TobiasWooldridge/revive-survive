@@ -32,38 +32,19 @@
 
   <body>
 
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">Revive Survive</a>
-        </div>
-        <div class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div>
-    </div>
-
     <div class="container">
 
       <div class="starter-template">
         <h1>Revive Survive</h1>
 <p class="lead">Don't risk fatigue on our roads. Know where and when to stop.</p>
 <a name="about"></a>
-<p>Revive Survive runs constantly on your device, and knows when you're driving.  It tells you:</p>
-<ul>
-<li>Where and when to stop
-<li>When you are approaching an area of higher crash risk
-<li>Where upcoming public toilets, rest stops and hotels are
-</ul>
+<p>Revive Survive runs constantly on your device, and knows when you're driving. When you've been driving for an extended period of time it advise you that you have been driving for a long time, and direct you to stop at upcoming public rest stops, public toilets, petrol stations, etc.
 <p>Run it all the time - <a href="#tech">it won't drain your battery</a>.</p>
-<p>After 3 hours, drivers are reminded of the road toll and fatigue statistics.</p>
+<br />
+<p>To help convince drivers to stop after 3 hours, we remind them of road toll and fatigue statistics, and of how many recent accidents there have been in the area.</p>
+<br />
+<p>Ultimately, we think Revive Survive is a practical app that effectively aggregates modest data sources to potentially save lives. We managed to implement the entire application during the weekend of Unleashed/Govhack 2014, and the relevance of the application is only going to increase as technology becomes more prevalent in our lives.</p>
+
 <div class="images">
 <img src="slide1.png" width="300" height="533"/>
 <img src="slide2.png" width="300" height="533"/>
@@ -75,17 +56,24 @@
 
 <a name="tech"></a>
 <h1>Tech</h1>
+<h2>Efficient Vehicle Detection</h2>
 <p>Instead of using GPS or WiFi to know what you're doing, Revive Survive uses <a href="http://developer.android.com/training/location/activity-recognition.html">Android's Activity Recognition service</a>.  This uses the phone's accelerometer to know whether you're driving or not, and uses less power than the GPS.</p>
 <p>The application currently gets upcoming rest stops from a PostGis server.  An enhancement could store this data locally so no data connection is needed.</p>
 <p>The GPS is activated briefly when it's time to stop driving.  The low-resolution service which uses the mobile phone towers would be adequate.</p>
 
-<h2>API</h2>
+<h2>Text to Speech</h2>
+<p>Android's native text to speech library enables Revive Survive to inform drivers of important events without distracting them from driving.</p>
+<p>This is critical for the application to be used safely</p>
 
+<h2>PostGIS</h2>
+<p>The project is backed by a postGIS database. The data from the database can be download <a href="http://vertex.xyz/govhack.sql">here</a></p>
+
+<h2>API</h2>
 <p>See <a href="http://54.210.25.223/?latitude=-34.9&longitude=139.2&radius=10">a sample query</a> for places <a href="https://www.google.com.au/maps/place/35%C2%B000%2700.0%22S+139%C2%B000%2700.0%22E/@-34.921198,139.2537886,13z/data=!4m2!3m1!1s0x0:0x0?hl=en">near Mannum, SA.</a></p>
 
 <a name="data"></a>
 <h1>Data sources</h1>
-<p>Our data sources include:</p>
+<p>Revive Survive's data sources include:</p>
 <ul>
 <li><a href="http://data.sa.gov.au/dataset/road-crashes-in-sa">Road crashes in SA</a>
 <li><a href="http://data.sa.gov.au/dataset/roadside-significant-sites">Roadside significant sites</a>
@@ -101,7 +89,8 @@
 <li><a href="http://www.sa.gov.au/__data/assets/pdf_file/0011/21530/restmaps_complete.pdf">Stop. Revive. Survive. Rest stop map</a> (fatigue statistic)
 <li><a href="http://data.gov.au/dataset/south-australian-road-crash-statistics">South Australian Road Crash Statistics</a> (serious injuries and fatalities)
 </ul>
-<p>These datasets could also be useful:</p>
+
+<p>These datasets were found and could also be used for Revive Survive:</p>
 <ul>
 <li><a href="http://www.data.sa.gov.au/dataset/australian-tourism-data-warehouse-api">Australian Tourism Data Warehouse API</a>
 <li><a href="http://www.data.vic.gov.au/raw_data/city-of-melbourne-street-furniture-database/49">City of Melbourne street furniture</a>

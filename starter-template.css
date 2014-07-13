@@ -8,7 +8,7 @@ body {
   margin: 0 auto;
 }
 
-h1, .lead {
+h1, h2, h3, h4, .lead {
   text-align: center;
 }
 
