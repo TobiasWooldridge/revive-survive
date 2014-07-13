@@ -5,6 +5,7 @@ public class PitStop {
     public static final String TOILET_TYPE = "TOILET";
     public static final String BBQ_TYPE = "BBQ";
     public static final String REST_TYPE = "REST";
+    public static final String PARK_TYPE = "PARK";
     private double lat;
     private double lon;
     private double distance = 0;
@@ -36,6 +37,8 @@ public class PitStop {
                 return "\uD83C\uDF7D";
             case REST_TYPE:
                 return "\u2615";
+            case PARK_TYPE:
+                return "\uD83C\uDF32";
             default:
                 return "?";
         }
@@ -53,6 +56,8 @@ public class PitStop {
                 return "Public BBQ";
             case REST_TYPE:
                 return "Public rest area";
+            case PARK_TYPE:
+                return "Park";
             default:
                 return type;
         }

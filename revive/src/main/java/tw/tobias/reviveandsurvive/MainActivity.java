@@ -256,6 +256,9 @@ public class MainActivity extends Activity {
         if (isChecked(R.id.button_public_toilets)) {
             filterSet.add(PitStop.TOILET_TYPE);
         }
+        if (isChecked(R.id.button_parks)) {
+            filterSet.add(PitStop.PARK_TYPE);
+        }
 
         List<String> values = new ArrayList<>();
         final ArrayList<PitStop> pitStopList = new ArrayList<>();

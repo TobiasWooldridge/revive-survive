@@ -108,7 +108,7 @@
                 android:text="Rest Stops"
                 android:id="@+id/button_public_rest_stops"
                 android:checked="true"
-                />
+                android:textSize="14dp"/>
 
         <CheckBox
                 android:layout_width="wrap_content"
@@ -116,16 +116,23 @@
                 android:text="Toilets"
                 android:id="@+id/button_public_toilets"
                 android:checked="true"
-                />
-
+                android:textSize="14dp"/>
         <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Petrol Stations"
+                android:text="Servo's"
                 android:id="@+id/button_petrol_stations"
                 android:checked="true"
-                />
+                android:textSize="14dp"/>
+        <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Parks"
+                android:id="@+id/button_parks"
+                android:checked="true"
+                android:textSize="14dp"/>
     </LinearLayout>
+
 
 
     <View
