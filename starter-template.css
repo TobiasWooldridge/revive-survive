@@ -2,6 +2,12 @@ body {
   padding-top: 50px;
 }
 
+/* leave room above anchors for the title bar */
+a.anchor {
+  position:relative;
+  top: -200px;
+}
+
 .starter-template {
   padding: 40px 15px;
 }
