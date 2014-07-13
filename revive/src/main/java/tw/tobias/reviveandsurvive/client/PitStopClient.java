@@ -9,6 +9,7 @@ import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.List;
 
+import android.location.Location;
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.reflect.TypeToken;
@@ -25,8 +26,8 @@ public class PitStopClient {
         );
     }
 
-    public List<PitStop> getStops(double lat, double lon, double radius) throws IOException {
-        URL url = new URL(String.format("http://54.210.25.223/?latitude=%s&longitude=%s&radius=%s", lat, lon, radius));
+    public List<PitStop> getStops(Location location, double radius) throws IOException {
+        URL url = new URL(String.format("http://54.210.25.223/?latitude=%s&longitude=%s&radius=%s", location.getLatitude(), location.getLongitude(), radius));
 
         InputStream in = null;
         try {

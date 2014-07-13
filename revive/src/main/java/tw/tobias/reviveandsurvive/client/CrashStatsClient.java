@@ -1,5 +1,6 @@
 package tw.tobias.reviveandsurvive.client;
 
+import android.location.Location;
 import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
@@ -37,8 +38,8 @@ public class CrashStatsClient {
     }
 
 
-    public int getNumAccidents(double lat, double lon, double radius) throws IOException {
-        URL url = new URL(String.format("http://54.210.25.223/crash.php?latitude=%s&longitude=%s&radius=%s", lat, lon, radius));
+    public int getNumAccidents(Location location, double radius) throws IOException {
+        URL url = new URL(String.format("http://54.210.25.223/risk.php?latitude=%s&longitude=%s&radius=%s", location.getLatitude(), location.getLongitude(), radius));
 
         InputStream in = null;
         try {

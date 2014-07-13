@@ -5,6 +5,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -37,6 +40,8 @@ public class MainActivity extends Activity {
     private PitStopClient pitStopClient;
     private CrashStatsClient crashStatsClient;
     private ListView listView;
+
+    private Location location = new Location(TAG);
 
     List<PitStop> pitStops = Collections.emptyList();
     int numCrashes = 0;
@@ -174,8 +179,13 @@ public class MainActivity extends Activity {
     }
 
     private void refreshData() {
-        new GetPointsTask().execute();
-        new GetCrashesTask().execute();
+        try {
+            new GetPointsTask().execute();
+            new GetCrashesTask().execute();
+        }
+        catch (Exception e) {
+            Log.e(TAG, e.toString());
+        }
     }
 
     private void showTimeDriven(long drivingDuration) {
@@ -187,7 +197,7 @@ public class MainActivity extends Activity {
         @Override
         protected List<PitStop> doInBackground(Void... voids) {
             try {
-                return pitStopClient.getStops(-34.9274606, 138.6008726, 5000);
+                return pitStopClient.getStops(location, 5000);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -208,13 +218,13 @@ public class MainActivity extends Activity {
         @Override
         protected Integer doInBackground(Void... voids) {
             try {
-                return crashStatsClient.getNumAccidents(-34.9274606, 138.6008726, 5000);
+                return crashStatsClient.getNumAccidents(location, 5000);
             } catch (IOException e) {
                 Log.e(TAG, e.toString());
                 e.printStackTrace();
             }
 
-            return 1207;
+            return 0;
         }
 
         @Override
@@ -271,6 +281,29 @@ public class MainActivity extends Activity {
         });
     }
 
+    public void startGPSTracking() {
+        // Acquire a reference to the system Location Manager
+        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
+        // Define a listener that responds to location updates
+                LocationListener locationListener = new LocationListener() {
+                    public void onLocationChanged(Location newLocation) {
+                        location = newLocation;
+                        refreshData();
+                    }
+
+                    public void onStatusChanged(String provider, int status, Bundle extras) {}
+
+                    public void onProviderEnabled(String provider) {}
+
+                    public void onProviderDisabled(String provider) {}
+                };
+
+        // Register the listener with the Location Manager to receive location updates
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 60000, 10, locationListener);
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         tts = new TextToSpeech(getApplicationContext(), new TTSInitListener());
@@ -318,6 +351,11 @@ public class MainActivity extends Activity {
 
         new ActivityTrackerScan(this).startActivityRecognitionScan();
         showWarningLevelMessage(WarningLevel.NOT_DRIVING);
+
+        location.setLatitude(-34.9274606);
+        location.setLongitude(138.6008726);
+
+        startGPSTracking();
     }
 
     @Override
