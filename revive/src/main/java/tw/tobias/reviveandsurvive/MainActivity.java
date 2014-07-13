@@ -37,6 +37,10 @@ public class MainActivity extends Activity {
     private JsonClient client;
     private ListView listView;
 
+    Collection<PitStop> pitStops = Collections.emptySet();
+
+    int[] checkboxIds = { R.id.button_petrol_stations, R.id.button_public_rest_stops, R.id.button_public_toilets };
+
     public class TTSInitListener implements TextToSpeech.OnInitListener {
         @Override
         public void onInit(int status) {
@@ -49,7 +53,7 @@ public class MainActivity extends Activity {
     private enum WarningLevel {
         NOT_DRIVING(0, "You're not driving. Keep an eye out for traffic and you should be pretty safe from road accidents :)", "No time at all"),
 
-        SHORT_DRIVE(ONE_MINUTE, "You haven't been driving for very long. No problem!", "One minute"),
+        SHORT_DRIVE(1, "You haven't been driving for very long. No problem! Keep your eyes on the road.", "One minute"),
 
         ADVISE_STOP(ONE_HOUR, "You should consider taking a break in a while", "One hour"),
 
@@ -114,7 +118,8 @@ public class MainActivity extends Activity {
     public void updateDrivingProgressBar(long drivingDuration) {
         SeekBar drivingDurationBar = (SeekBar)findViewById(R.id.driving_duration_status_bar);
         drivingDurationBar.setEnabled(false);
-        int progressPercent = (int)(100 * (drivingDuration / TWO_HOURS));
+        int progressPercent = (int)(100 * ((double)drivingDuration / TWO_HOURS  ));
+        Log.i(TAG, "Driving for " + drivingDuration + " aka " + progressPercent);
         drivingDurationBar.setProgress(Math.min(100, progressPercent));
     }
 
@@ -126,7 +131,7 @@ public class MainActivity extends Activity {
         output.setText("You have been " + (latest.inVehicle() ? "in a vehicle" : "on foot") + " for " + latest.getDurationFormatted());
 
         long drivingDuration = 0;
-        if (latest.status == ActivityTrackerService.STATUS_IN_A_VEHICLE) {
+        if (latest.status.equals(ActivityTrackerService.STATUS_IN_A_VEHICLE)) {
             drivingDuration = latest.getDurationMillis();
         }
 
@@ -136,6 +141,72 @@ public class MainActivity extends Activity {
     private void showTimeDriven(long drivingDuration) {
         updateDrivingProgressBar(drivingDuration);
         showWarningLevelMessage(getCurrentLevel(drivingDuration));
+    }
+
+    private class getPointsTask extends AsyncTask<Void, Void, Collection<PitStop>> {
+        @Override
+        protected Collection<PitStop> doInBackground(Void... voids) {
+            try {
+                return client.getStops(-34.9274606, 138.6008726, 5000);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return Collections.emptySet();
+        }
+
+        @Override
+        protected void onPostExecute(Collection<PitStop> newPitStops) {
+            super.onPostExecute(newPitStops);
+
+            pitStops = newPitStops;
+            displayPitStops();
+        }
+    }
+
+    private boolean isChecked(int id) {
+        CheckBox box = (CheckBox)findViewById(id);
+        return box.isChecked();
+    }
+
+    private void displayPitStops() {
+        if (listView == null) {
+            listView = (ListView) findViewById(R.id.pit_stops);
+        }
+
+        Set<String> filterSet = new HashSet<>();
+        if (isChecked(R.id.button_petrol_stations)) {
+            filterSet.add(PitStop.PETROL_TYPE);
+        }
+        if (isChecked(R.id.button_public_rest_stops)) {
+            filterSet.add(PitStop.REST_TYPE);
+        }
+        if (isChecked(R.id.button_public_toilets)) {
+            filterSet.add(PitStop.TOILET_TYPE);
+        }
+
+        List<String> values = new ArrayList<>();
+        final ArrayList<PitStop> pitStopList = new ArrayList<>();
+        for (PitStop ps : pitStops) {
+            if (filterSet.contains(ps.getRawType())) {
+                values.add(ps.toString());
+                pitStopList.add(ps);
+            }
+        }
+
+
+        PitStopAdapter adapter = new PitStopAdapter(this, pitStopList);
+
+        listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                PitStop ps = pitStopList.get(position);
+                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + ps.getLat() + "," + ps.getLon()));
+                startActivity(i);
+            }
+        });
     }
 
     @Override
@@ -162,56 +233,16 @@ public class MainActivity extends Activity {
 
         new getPointsTask().execute();
         showWarningLevelMessage(WarningLevel.NOT_DRIVING);
-    }
 
-    private class getPointsTask extends AsyncTask<Void, Void, Collection<PitStop>> {
-        @Override
-        protected Collection<PitStop> doInBackground(Void... voids) {
-            try {
-                return client.getStops(-33.8757049, 151.231705, 5000);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return Collections.emptySet();
+        for (int id : checkboxIds) {
+            CheckBox checkBox = (CheckBox)findViewById(id);
+            checkBox.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    displayPitStops();
+                }
+            });
         }
-
-        @Override
-        protected void onPostExecute(Collection<PitStop> pitStops) {
-            super.onPostExecute(pitStops);
-            displayPitStops(pitStops);
-        }
-    }
-
-    private void displayPitStops(Collection<PitStop> pitStops) {
-        if (listView == null) {
-            listView = (ListView) findViewById(R.id.pit_stops);
-        }
-
-        List<String> values = new ArrayList<>();
-        final List<PitStop> pitStopList = new ArrayList<>();
-        for (PitStop ps : pitStops) {
-            values.add(ps.toString());
-            pitStopList.add(ps);
-        }
-
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-            this,
-            android.R.layout.simple_list_item_1,
-            android.R.id.text1,
-            values);
-
-        listView.setAdapter(adapter);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                PitStop ps = pitStopList.get(position);
-                Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse("google.navigation:q=" + ps.getLat() + "," + ps.getLon()));
-                startActivity(i);
-            }
-        });
     }
 
     @Override

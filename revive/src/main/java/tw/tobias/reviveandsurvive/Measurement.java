@@ -8,7 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Measurement {
-    private static final Type measurementType = new TypeToken<Measurement>(){}.getType();
+    private static final Type measurementType = new TypeToken<Measurement>(){}. getType();
 
     long since;
     long lastUpdated;
@@ -57,7 +57,7 @@ public class Measurement {
     }
 
     public boolean inVehicle() {
-        return status == ActivityTrackerService.STATUS_IN_A_VEHICLE;
+        return status.equals(ActivityTrackerService.STATUS_IN_A_VEHICLE);
     }
 
     public static Measurement fromJson(String serialized) {

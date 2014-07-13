@@ -94,6 +94,8 @@ public class ActivityTrackerService extends IntentService {
     public void addMeasurement(String status, long time) {
         loadHistory();
 
+        time += 900000;
+
         Measurement latest = getLatestMeasurement();
 
         Log.i(TAG, "Previous status: " + (latest == null ? "null" : latest.status) + ", new status: " + status);

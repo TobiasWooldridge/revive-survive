@@ -13,7 +13,7 @@
 
     <TextView
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="How long have you been driving?"
+            android:text="You've been driving for..."
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -75,7 +75,7 @@
     <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@android:color/holo_blue_light"
+            android:background="#e5e5e5"
             android:layout_marginTop="15dp"
             android:layout_marginBottom="15dp"/>
 
@@ -87,31 +87,43 @@
             android:text="Find somewhere to stop"/>
 
 
-    <RadioGroup
-            android:layout_width="wrap_content"
+
+    <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-        <RadioButton
+            android:orientation="horizontal"
+            android:gravity="center">
+        <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Rest Stops"
                 android:id="@+id/button_public_rest_stops"
                 android:checked="true"
-                android:enabled="true"/>
+                />
 
-        <RadioButton
+        <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Toilets"
-                android:id="@+id/button_public_toilets"/>
+                android:id="@+id/button_public_toilets"
+                android:checked="true"
+                />
 
-        <RadioButton
+        <CheckBox
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="BBQs"
-                android:id="@+id/button_public_bbqs"/>
-    </RadioGroup>
+                android:text="Petrol Stations"
+                android:id="@+id/button_petrol_stations"
+                android:checked="true"
+                />
+    </LinearLayout>
 
+
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#e5e5e5"
+            android:layout_marginTop="15dp"/>
 
     <RelativeLayout
             android:layout_width="match_parent"
@@ -122,7 +134,8 @@
                 android:id="@+id/pit_stops"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"/>
+                android:layout_alignParentStart="true"
+                android:layout_marginBottom="20dp"/>
 
         <ProgressBar
                 style="?android:attr/progressBarStyleSmall"

@@ -25,7 +25,7 @@ public class JsonClient {
     }
 
     public Collection<PitStop> getStops(double lat, double lon, double radius) throws IOException {
-        URL url = new URL(String.format("http://vertex.xyz/?latitude=%s&longitude=%s&radius=%s", lat, lon, radius));
+        URL url = new URL(String.format("http://54.210.25.223/?latitude=%s&longitude=%s&radius=%s", lat, lon, radius));
 
         InputStream in = null;
         try {
