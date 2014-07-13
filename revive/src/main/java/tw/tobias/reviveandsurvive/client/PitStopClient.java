@@ -13,7 +13,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.reflect.TypeToken;
 
-public class JsonClient {
+public class PitStopClient {
     private final Gson gson = new Gson();
     private static final Type collectionType
             = new TypeToken<Collection<PitStop>>(){}.getType();

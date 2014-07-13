@@ -14,7 +14,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
-import tw.tobias.reviveandsurvive.client.JsonClient;
+import tw.tobias.reviveandsurvive.client.CrashStatsClient;
+import tw.tobias.reviveandsurvive.client.PitStopClient;
 import tw.tobias.reviveandsurvive.client.PitStop;
 
 import java.io.IOException;
@@ -30,14 +31,15 @@ public class MainActivity extends Activity {
 
     private final static String TAG = "MainActivity";
 
-    private final static int ONE_MINUTE = 60 * 1000;
     private final static int ONE_HOUR = 60 * 60 * 1000;
     private final static int TWO_HOURS = 2 * ONE_HOUR;
     private TextToSpeech tts;
-    private JsonClient client;
+    private PitStopClient pitStopClient;
+    private CrashStatsClient crashStatsClient;
     private ListView listView;
 
     List<PitStop> pitStops = Collections.emptyList();
+    int numCrashes = 0;
 
     int[] checkboxIds = { R.id.button_petrol_stations, R.id.button_public_rest_stops, R.id.button_public_toilets };
 
@@ -94,7 +96,22 @@ public class MainActivity extends Activity {
         return WarningLevel.NOT_DRIVING;
     }
 
+    static RiskLevel[] riskLevels = {
+            RiskLevel.CITY_DRIVING,
+            RiskLevel.HIGH_RISK,
+            RiskLevel.MEDIUM_RISK,
+            RiskLevel.LOW_RISK
+    };
 
+
+    public RiskLevel getRiskLevel(int crashes) {
+        for (RiskLevel level : riskLevels) {
+            if (crashes >= level.threshold) {
+                return level;
+            }
+        }
+        return RiskLevel.LOW_RISK;
+    }
     public WarningLevel previousLevel = null;
     public void showWarningLevelMessage(WarningLevel level) {
         TextView guidanceMessage = (TextView)findViewById(R.id.guidance_message);
@@ -105,7 +122,13 @@ public class MainActivity extends Activity {
                 case WARNING:
                 case DANGER:
                 case IMMEDIATE_DANGER:
-                    tts.speak("You have been driving for over " + level.timeDesc + ". " + level.message, TextToSpeech.QUEUE_ADD, null);
+                    PitStop next = pitStops.get(0);
+
+                    tts.speak("You have been driving for over " +
+                            level.timeDesc + ". " +
+                            level.message + ". " +
+                            String.format("There is a %s in %s. You could stop there.", next.getType(), next.getDistanceReadable())
+                            , TextToSpeech.QUEUE_ADD, null);
                     break;
                 default:
                     break;
@@ -113,6 +136,11 @@ public class MainActivity extends Activity {
         }
 
         previousLevel = level;
+    }
+
+    public void showRiskLevelMessage(RiskLevel level) {
+        TextView riskMessage = (TextView)findViewById(R.id.risk_level);
+        riskMessage.setText(String.format("You are in a %s (%d accidents in 5 years)", level.message, numCrashes));
     }
 
     public void updateDrivingProgressBar(long drivingDuration) {
@@ -137,9 +165,9 @@ public class MainActivity extends Activity {
 
             topText.setText("You have been driving for " + latest.getDurationFormatted());
         }
-
-        topText.setText("You are not driving at the moment");
-
+        else {
+            topText.setText("You are not driving at the moment");
+        }
 
 
         showTimeDriven(drivingDuration);
@@ -150,11 +178,11 @@ public class MainActivity extends Activity {
         showWarningLevelMessage(getCurrentLevel(drivingDuration));
     }
 
-    private class getPointsTask extends AsyncTask<Void, Void, List<PitStop>> {
+    private class GetPointsTask extends AsyncTask<Void, Void, List<PitStop>> {
         @Override
         protected List<PitStop> doInBackground(Void... voids) {
             try {
-                return client.getStops(-34.9274606, 138.6008726, 5000);
+                return pitStopClient.getStops(-34.9274606, 138.6008726, 5000);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -168,6 +196,28 @@ public class MainActivity extends Activity {
 
             pitStops = newPitStops;
             displayPitStops();
+        }
+    }
+
+    private class GetCrashesTask extends AsyncTask<Void, Void, Integer> {
+        @Override
+        protected Integer doInBackground(Void... voids) {
+            try {
+                return crashStatsClient.getNumAccidents(-34.9274606, 138.6008726, 5000);
+            } catch (IOException e) {
+                Log.e(TAG, e.toString());
+                e.printStackTrace();
+            }
+
+            return 1207;
+        }
+
+        @Override
+        protected void onPostExecute(Integer newNumCrashes) {
+            super.onPostExecute(newNumCrashes);
+
+            numCrashes = newNumCrashes;
+            showRiskLevelMessage(getRiskLevel(numCrashes));
         }
     }
 
@@ -236,12 +286,15 @@ public class MainActivity extends Activity {
             }
         });
 
-        client = new JsonClient();
+        // Load nearby points of interest (stops, toilets, etc.)
+        pitStopClient = new PitStopClient();
+        new GetPointsTask().execute();
 
+        // Get how many crashes have been nearby in the last 5 years
+        crashStatsClient = new CrashStatsClient();
+        new GetCrashesTask().execute();
 
-        new getPointsTask().execute();
         showWarningLevelMessage(WarningLevel.NOT_DRIVING);
-
         for (int id : checkboxIds) {
             CheckBox checkBox = (CheckBox)findViewById(id);
             checkBox.setOnClickListener(new View.OnClickListener() {

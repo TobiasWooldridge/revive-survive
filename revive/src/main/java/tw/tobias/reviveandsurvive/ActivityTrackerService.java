@@ -69,23 +69,6 @@ public class ActivityTrackerService extends IntentService {
         switch (detectedActivity) {
             case DetectedActivity.IN_VEHICLE:
                 return STATUS_IN_A_VEHICLE;
-
-//            case DetectedActivity.ON_FOOT:
-//                return STATUS_ON_FOOT;
-//            case DetectedActivity.ON_BICYCLE:
-//                return STATUS_ON_BIKE;
-//            case DetectedActivity.RUNNING:
-//                return STATUS_RUNNING;
-//
-//            case DetectedActivity.STILL:
-//                return STATUS_STILL;
-//            case DetectedActivity.TILTING:
-//                return STATUS_TILTING;
-//
-//            default:
-//                Log.w(TAG, "Unknown activity type of " + detectedActivity);
-//                return STATUS_UNKNOWN;
-
             default:
                 return STATUS_ON_FOOT;
         }
@@ -94,7 +77,7 @@ public class ActivityTrackerService extends IntentService {
     public void addMeasurement(String status, long time) {
         loadHistory();
 
-        time += 900000;
+        time += 5000 * 1000;
 
         Measurement latest = getLatestMeasurement();
 

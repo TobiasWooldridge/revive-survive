@@ -52,7 +52,7 @@ public class PitStop {
             case BBQ_TYPE:
                 return "Public BBQ";
             case REST_TYPE:
-                return "Rest stop";
+                return "Public rest area";
             default:
                 return type;
         }

@@ -13,7 +13,7 @@
 
     <TextView
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:text="You've been driving for..."
+            android:text="You are not driving at the moment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
@@ -71,6 +71,14 @@
             android:text=""
             android:id="@+id/guidance_message"
             android:layout_marginTop="20dp"
+            android:gravity="center"/>
+
+    <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text=""
+            android:id="@+id/risk_level"
             android:gravity="center"/>
 
     <View
