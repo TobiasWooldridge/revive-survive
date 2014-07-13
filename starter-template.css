@@ -2,12 +2,6 @@ body {
   padding-top: 50px;
 }
 
-/* leave room above anchors for the title bar */
-a.anchor {
-  position:relative;
-  top: -200px;
-}
-
 .starter-template {
   max-width: 700px;
   padding: 40px 15px;
